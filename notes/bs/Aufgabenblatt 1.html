@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aufgabenblatt 1</title>
+  <link rel="stylesheet" href="http://app.classeur.io/base-min.css" />
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
+<body>
+  <div class="export-container"><h1 id="aufgabenblatt-1">Aufgabenblatt 1</h1>
+<hr>
+<p><strong>1 - Was ist die Aufgabe der Shell?</strong></p>
+<p>Mit der Shell können Programme gesucht und ausgeführt werden. Sie kann interaktiv Kommandos ausführen, Ein- und Ausgabe des Terminals steuern, Kind- und Hintergrundprozesse erzeugen, und dient sogar als eigene Programmiersprache (Shell-Skripts).</p>
+<p><strong>2 - Welche Schritte werden durchlaufen, wenn man einen Befehl eingibt?</strong></p>
+<p>Wenn ein Befehl eingegeben wird, prüft die Shell zuerst ob es sich um einen <em>built-in</em> Befehl handelt, den sie selbst ausführen kann. Falls das nicht der Fall ist, wird nach einem Befehl mit absoluter Pfadangabe gesucht (also bspw. im aktuellen Verzeichnis wenn nur der Befehlsname eingegeben wurde). Anschließend wird in den Verzeichnissen die im <em>PATH</em> angegeben sind gesucht.</p>
+<p><strong>3 - Welche Funktionen haben Shell-Variablen?</strong></p>
+<p>Mit Shell Variablen können eigene, temporäre Variablen festgelegt werden, welche innerhalb eines Prozesses gespeichert werden. Wichtige Shell-Variablen:</p>
+<ul>
+<li><code>$#</code> (Anzahl der Argumente)</li>
+<li><code>$*</code> (Alle Argumente)</li>
+<li><code>$0</code> (Programm was gerade ausgeführt wird)</li>
+<li><code>$1-9</code> (Bestimmte Argumente).</li>
+<li>Eigene definierte Variablen (<code>a=10</code>)</li>
+</ul>
+<p><strong>4 - Nennen Sie mindestens 3 nützliche Befehle für Shell-Variablen</strong></p>
+<p><code>set</code>zeigt die Werte aller aktuellen Shell-Variablen an. Mit <code>unset</code> kann eine Variable wieder gelöscht werden. Durch <code>readonly</code> kann der Wert einer Variable nicht mehr verändert werden.<br>
+Mit <code>echo</code> können Variablen ausgegeben werden.</p>
+<p><strong>5 - Was ist der Unterschied zwischen einer Shell-Variablen und einer Umgebungsvariablen und wie wird die Umgebungsvariable angelegt?</strong></p>
+<p>Shell-Variablen sind vom Benutzer definiert und existieren nur in dem Kontext des aktiven Prozesses. Sobald der Prozess beendet wird, werden die Shell-Variablen gelöscht. Shell Variablen sind Kindern des aktiven Prozesses nicht zugänglich.</p>
+<p>Umgebungsvariablen sind vom System definiert und gelten für alle Prozesse. Innerhalb von Prozessen können zwar Umgebungsvariablen verändert oder neu angelegt werden, diese verfallen allerdings sobald der Prozess geschlossen wird. Kinder des aktiven Prozesses haben Zugriff auf die veränderten Umgebungsvariablen des Vater-Prozesses.</p>
+<p><strong>6 - Welche Ausgabe wird durch folgendes Script erzeugt?</strong></p>
+<pre><code class="prism language-shell"> #! /usr/bin/sh
+ a=Eins
+ b=Zwei
+ c = Drei
+ echo "$a, $b, $c"
+</code></pre>
+<p>Die ersten zwei Variablen werden korrekt ausgegeben, bei <code>$c</code> wird eine Fehlermeldung produziert (<em>not found</em>).</p>
+<p><strong>7 - Wie müsste das Scriptfile verändert werden, damit die Fehlermeldung verschwindet und wie sieht dann die Ausgabe aus?</strong></p>
+<p>Bei der Deklaration von Shellvariablen dürfen keine Leerzeichen zwischen dem Gleichheitszeichen und den Werten stehen. Die korrekte Definition von <code>$c</code> wäre also:<br>
+<code>c=Drei</code><br>
+Damit ist ist Ausgabe dann <em>Eins, Zwei, Drei</em> wie gewünscht.</p>
+<p><strong>8 - Was steht nach folgendem Aufruf in der Shell-Variablen benutzer?</strong><br>
+<code>benutzer=`who | cut -c1-10 | sort`</code></p>
+<p>In <code>benutzer</code> stehen die Benutzernamen aller aktuell angemeldeten Benutzer, alphabetisch sortiert. Mit <code>who</code> wird die Liste allter angemeldeten Benutzer ausgegeben (mit zusätzlichen Informationen wie Anmeldezeitpunkt usw.). Durch <code>cut -c1-10</code> werden nur die ersten 10 Zeichen jeder Zeile ausgewählt (und somit nur der Benutzername). <code>sort</code>sortiert die Ergebnisse.</p>
+<p><strong>9 - Wie kann der Rückgabewert des zuletzt ausgeführten Programms überprüft werden?</strong></p>
+<p>Der letzte Rückgabewert kann mit <code>$?</code> abgerufen werden.</p>
+<p><strong>10 - Was steht nach folgendem Aufruf auf dem Rechner advbs08 in der Shell-Variablen bashuser und wie kann man sich den Inhalt ansehen?</strong><br>
+<code>bashuser=`ypcat passwd | grep bash | cut -d: -f5`</code></p>
+<p>Mit <code>ypcat passwd</code>werden alle Benutzer des Systems angezeigt, mit <code>grep</code> können Zeilen nach dem Vorkommen eines bestimmten Musters gefiltert bzw. durchsucht werden. Hier werden also nur Benutzer angezeigt, welche ein <em>bash</em> Directory in ihrem Path haben (?).<br>
+Durch <code>cut -d: -f5</code> wird nur der Name des Benutzers angezeigt. Mit der Option <code>-d</code> kann ein eigenes Symbol angegeben werden dass als Trennzeichen dient, hier der Doppelpunkt. Mit <code>-f4</code> wird dann das fünfte “Feld” ausgewählt (Felder durch <code>:</code> getrennt).<br>
+Die Ausgabe von <em>bashuser</em> geschieht über:</p>
+<pre><code class="prism language-shell">echo $bashuser
+</code></pre></div>
+</body>
+
+</html>
