@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aufgabenblatt 2</title>
+  <link rel="stylesheet" href="http://app.classeur.io/base-min.css" />
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
+<body>
+  <div class="export-container">
+    <a href="index.html" style="text-decoration: none; display: inline-block; margin-top: 20px;">Zurück zu Betriebssysteme Übersicht</a>
+    <h1 id="zweites-aufgabenblatt">Zweites Aufgabenblatt</h1>
+<hr>
+<p><strong>1 - Der Aufruf</strong> <code>int main(int argc, char* argv[])</code> <strong>kennt noch einen dritten Parameter. Wie lautet diese Parametervereinbarung? Welche Inhalte werden darüber erreicht? Welche zweite Möglichkeit gibt es noch, um auf die gleichen Inhalte zuzugreifen?</strong></p>
+<p>Als dritten Parameter kann man auch <code>char *envp[]</code> übergeben, welches alle aktuellen Umgebungsvariablen enthält. Über die C-Funktion <code>getenv()</code> enthält man ebenfalls die Umgebungsvariablen.</p>
+<p><strong>2 - Skizzieren Sie den Aufbau der Argumenten- bzw. der Umgebungsvariablenliste.</strong></p>
+<p>Argumentenliste (<code>char *argv[]</code>)</p>
+<blockquote>
+<p>Programmname<br>
+Argument 1<br>
+Argument 2<br>
+…<br>
+0</p>
+</blockquote>
+<p>Umgebungsvariablenliste (<code>char *envp[]</code>):</p>
+<blockquote>
+<p>“HOME=…”<br>
+“SHELL=…”<br>
+…<br>
+0</p>
+</blockquote>
+<p><strong>3 - Jedes Programm in der Ausführung hat Umgebungsvariablen. Mit welchen C-Aufrufen kann man sie setzen, ändern, löschen oder abfragen? Nennen Sie zusätzlich noch einige wichtige Umgebungsvariablen.</strong></p>
+<p>Umgebungsvariablen kann man mit den folgenden C-Funktionen manipulieren:</p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token function">getenv<span class="token punctuation">(</span></span>name<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/** Returns the value of a given Environment-Variable. Example: value = getenv("HOME"); **/</span>
+<span class="token function">putenv<span class="token punctuation">(</span></span>string<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/** Creates a new Environment-Variable or updates an existing one. Exampe: setenv("HOME=/usr/home"); **/</span>
+<span class="token function">setenv<span class="token punctuation">(</span></span>name<span class="token punctuation">,</span> value<span class="token punctuation">,</span> overwrite<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/** Creates a new Environment-Variable or updates an existing one, with separate name and value parameters. Allows you to specify whether you wish to overwrite an existing variable **/</span>
+<span class="token function">unsetenv<span class="token punctuation">(</span></span>name<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/** Deletes an existing Environment-Variable. **/</span>
+</code></pre>
+<p>Einige wichtige Umgebungsvariablen sind <code>HOME, PATH, USER</code>.</p>
+<p><strong>4 - Sie haben folgenden Aufruf:</strong> <code>./a.out eins zwei &gt;file drei</code><br>
+<strong>Wie behandelt die Shell die Ausgabenumlenkung und welcher Wert steht in argc?</strong></p>
+<p><em>(?)</em></p>
+<p><strong>5 - Sie haben folgenden Aufruf:</strong> <code>./a.out 3 * 4</code><br>
+<strong>Wie behandelt die Shell die Aufrufparameter und welcher Wert steht in argc?</strong></p>
+<p>Alle Parameter werden dem Programm als Argumente in argc übergeben, also:<br>
+<code>argc = {a.out, 3, *, 4, 0}</code></p>
+<p><strong>6 - Was passiert, wenn ein Elternprozess einen Kindprozess erzeugt, und wie kann ich feststellen, ob ich mich im Eltern- bzw. Kindprozess befinde?</strong></p>
+<p>Wenn ein Kindprozess erzeugt wird, wird eine exakte Kopie des Prozesses erzeugt. Dieser startet (parallel) an genau der Stelle wo fork() aufgerufen wird und läuft das Programm bis zum Ende durch. Feststellen ob man sich im Eltern bzw. Kindprozess befindet kann man anhand des Rückgabewertes von fork():</p>
+<p>Im Elternprozess ist der Rückgabewert von fork() gleich der PID des Kindprozesses bzw -1 im Fehlerfall.<br>
+Im Kindprozess ist der Rückgabewert gleich 0.</p>
+<p><strong>7 - Was erbt ein Kindprozess vom Elternprozess beim fork()-Aufruf, und was bleibt beim exec()-Aufruf erhalten?</strong></p>
+<p><code>fork()</code> erzeugt einen neuen Prozess und bekommt somit eine neue PID. Alle Umgebungsvariablen werden vererbt. Bei <code>exec()</code> wird ein neues Programm in den aktuellen Prozess geladen, die PID bleibt also erhalten (es wird kein neuer Prozess erzeugt).</p>
+<p><strong>8 - Können nach dem Aufruf von fork() der Elternprozeß und der Kindprozeß noch Variablen oder Daten im jeweils anderen Prozeß manipulieren?</strong></p>
+<p>Nein, jeder Prozess hat seinen eigenen Umgebungskontext und -variablen. Der Kindprozess kann jedoch mit <code>return value</code> einen Wert zurückgeben der vom Elternprozess mit <code>waitpid()</code> abgefangen werden kann.</p></div>
+</body>
+
+</html>

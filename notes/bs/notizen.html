@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notizen</title>
+  <link rel="stylesheet" href="http://app.classeur.io/base-min.css" />
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
+<body>
+  <div class="export-container">
+    <a href="index.html" style="text-decoration: none; display: inline-block; margin-top: 20px;">Zurück zu Betriebssysteme Übersicht</a>
+    <h2 id="shell">Shell</h2>
+<p>In Unix kann man die Standardeingabe und Standardausgabe von Kommandos so verändern, dass sie nicht mehr mit der Tastatur oder dem Bildschirm verbunden sind, sondern mit bestimmten Datein.</p>
+<table>
+<thead>
+<tr>
+<th>Gerätenamen</th>
+<th>Gerät</th>
+<th>Kanal</th>
+<th>Symbol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Standardeingabe</td>
+<td>stdin</td>
+<td>0</td>
+<td>&lt;</td>
+</tr>
+<tr>
+<td>Standardausgabe</td>
+<td>stdout</td>
+<td>1</td>
+<td>&gt;</td>
+</tr>
+<tr>
+<td>Standardfehlerausgabe</td>
+<td>stderr</td>
+<td>2</td>
+<td>&gt;&amp;</td>
+</tr>
+</tbody>
+</table>
+<p>Beispiel: <code>$ command &lt; eingabedatei &gt; ausgabedatei</code></p>
+<pre><code class="prism language-shell">$ wc &lt; datei # Gibt die Anzahl der Wörter in datei aus.
+$ a.out &gt;&amp; datei # Standardausgabe und Standardfehlerausgabe 
+				 # wird zu datei umgeleitet. 
+</code></pre></div>
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aufgabenblatt 3</title>
+  <link rel="stylesheet" href="http://app.classeur.io/base-min.css" />
+  <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+</head>
+
+<body>
+  <div class="export-container">
+    <a href="index.html" style="text-decoration: none; display: inline-block; margin-top: 20px;">Zurück zu Betriebssysteme Übersicht</a>
+    <h1 id="drittes-aufgabenblatt">Drittes Aufgabenblatt</h1>
+<hr>
+<p><strong>1 - Erklären Sie, wofür man eine Pipe benötigt!</strong></p>
+<p>Pipes verbinden die Standardausgabe eines Prozesses mit der Standardeingabe eines anderen Prozesses. Dadurch kann man verschiedene Programme miteinander verketten.</p>
+<p><strong>2 - Was ist die Voraussetzung für eine namenlose (unnamed) Pipe?</strong></p>
+<p><em>(?)</em><br>
+Ein Prozess muss schreibend und ein Prozess lesend sein. Da beide Prozesse standardmäßig lesen und schreiben, muss beim schreibenden Prozess das lesende Ende geschlossen werden und viceversa.</p>
+<p><strong>3 - In welche Richtungen und welcher Reihenfolge werden die Daten in einer Pipe üblicherweise transferiert?</strong></p>
+<p>Pipes sind meist unidirektional, d.h. Daten werden von einem schreibenden Prozess zu einem lesenden Prozess übertragen, und kommen auch in der Reihenfolge an, in der sie geschrieben wurden.</p>
+<p><strong>4 - Wann setzt man eine benannte (named) Pipe ein?</strong></p>
+<p>Named Pipes werden benutzt um Daten zwischen verschiedenen Prozessen auszutauschen. Named Pipes bleiben bestehen wenn die Prozesse beendet werden, es sei denn sie werden explizit durch unlink() geschlossen.</p>
+<p><strong>5 - Fehlermeldungen eines selbstgeschriebenen C-Programms sollen immer auf dem Bildschirm erscheinen, auch wenn die Standardausgabe in eine Datei oder eine Pipe gelenkt wird. Wie erreiche ich das?</strong></p>
+<p><em>(?)</em><br>
+Mit gcc werden Fehlermeldungen eines Programms immer auf der Konsole angezeigt, selbst wenn die Standardausgabe umgeleitet wird. <code>gcc test.c &gt; ausgabe</code> leitet also die Standardausgabe in <em>ausgabe</em> um, die Standardfehlerausgabe ist aber weiterhin die Konsole.</p></div>
+</body>
+
+</html>
