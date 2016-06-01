@@ -18,11 +18,11 @@
 </head>
 
 <body>
-  
   <div class="export-container">
-    <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück zu Betriebssysteme Übersicht</a>
-    <h1 id="aufgabenblatt-1">Aufgabenblatt 1</h1>
+  <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück</a>
+  <h1 id="aufgabenblatt-1">Aufgabenblatt 1</h1>
 <hr>
+<h2 id="aufgabe-1">Aufgabe 1</h2>
 <p><strong>1 - Was ist die Aufgabe der Shell?</strong></p>
 <p>Mit der Shell können Programme gesucht und ausgeführt werden. Sie kann interaktiv Kommandos ausführen, Ein- und Ausgabe des Terminals steuern, Kind- und Hintergrundprozesse erzeugen, und dient sogar als eigene Programmiersprache (Shell-Skripts).</p>
 <p><strong>2 - Welche Schritte werden durchlaufen, wenn man einen Befehl eingibt?</strong></p>
@@ -65,7 +65,89 @@ Damit ist ist Ausgabe dann <em>Eins, Zwei, Drei</em> wie gewünscht.</p>
 Durch <code>cut -d: -f5</code> wird nur der Name des Benutzers angezeigt. Mit der Option <code>-d</code> kann ein eigenes Symbol angegeben werden dass als Trennzeichen dient, hier der Doppelpunkt. Mit <code>-f4</code> wird dann das fünfte “Feld” ausgewählt (Felder durch <code>:</code> getrennt).<br>
 Die Ausgabe von <em>bashuser</em> geschieht über:</p>
 <pre><code class="prism language-shell">echo $bashuser
-</code></pre></div>
+</code></pre>
+<hr>
+<h2 id="aufgabe-2">Aufgabe 2</h2>
+<p><strong>Schreiben Sie ein Shellscript <em><a href="http://login.sh">login.sh</a></em>, welches automatisch bei jedem Aufruf der Shell ausgeführt wird und eine personalisierte Login-Nachricht auf dem Bildschirm ausgibt. Diese Nachricht soll einen Bezug zur aktuellen Uhrzeit, den Benutzernamen und die Größe des eigenen Homeverzeichnisses beinhalten.<br>
+Zur Uhrzeit soll je nach der aktuellen Stunde eine unterschiedliche Meldung ausgegeben werden z.b. 6-9 Uhr "Guten Morgen, " oder 10-15 Uhr "Guten Tag, ". Beschränken Sie sich auf ca. 4-5 Tagesabschnitte.<br>
+Die Ausgabe der Größe des eigenen Homeverzeichnisses sollte in lesbaren MiBi erfolgen.<br>
+Challenge 1: statt  den “Real Name” ausgeben<br>
+Challenge 2: Überprüfung, ob der Speicherplatz die aktuelle Grenze von 250 MB annähert oder überschreitet und eine textliche oder farbliche Reaktion darauf</strong></p>
+<p>Lösung:</p>
+<pre><code class="prism language-shell">#! /usr/bin/sh
+hour=`date +%H`
+min=`date +%M`
+stor=`du -sm ~ | cut -f1` 
+maxstor=250
+realname=`ypcat passwd | grep $USER | cut -d: -f5`
+
+if [ $hour -lt 08 ]; then
+	echo "Guten Morgen, $realname ($USER)!"
+elif [ $hour -lt 12 ]; then
+	echo "Guten Tag, $realname ($USER)!"
+elif [ $hour -lt 18 ]; then
+	echo "Guten Nachmittag, $realname ($USER)!"
+elif { $hour lt 22 ]; then
+	echo "Guten Abend, $realname ($USER)!"
+else 
+	echo "Gute Nacht, $realname ($USER)!"
+fi
+
+echo "Uhrzeit: $hour:$min"
+
+if [ $stor -gt $maxstor ]; then
+	echo "\033[0;31mSpeicherplatz ueberschritten: $stor/$maxstor MB\033[0m"
+elif (( ( $maxstor - $stor ) &lt; 50 )); then
+	echo "\033[1;33mSpeicherplatz: $stor/$maxstor MB\033[0m"
+else
+	echo "Speicherplatz: $stor/$maxstor MB"
+fi
+</code></pre>
+<hr>
+<h2 id="aufgabe-3">Aufgabe 3</h2>
+<p><strong>Schreiben Sie ein Shell-Script mit dem Namen myquestion. Dieses Script hat als Parameter den Text einer Frage, die mit Ja oder Nein beantwortet werden kann. Antwortet der Benutzer mit Ja, so liefert das Script den Rückgabewert 0, bei Nein wird 1 geliefert, andernfalls erscheint die Frage noch einmal. Wird das Shell-Script ohne Parameter oder mit mehr als einem Parameter aufgerufen, dann wird das Script abgebrochen und als Rückgabewert wird eine 2 übergeben.</strong></p>
+<p>Lösung:</p>
+<pre><code class="prism language-shell">#! /usr/bin/sh
+​
+if [ $# != 1 ]
+	then return 2;;
+fi
+​
+echo $1
+read answer
+​
+case $answer in
+	[Jj]* ) return 0 ;;
+	[Yy]* ) return 0 ;;
+	[Nn]* ) return 1 ;;
+	*) . /home/$USER/bin/myquestion ;;
+esac
+</code></pre>
+<hr>
+<h2 id="aufgabe-4">Aufgabe 4</h2>
+<p><strong>Erstellen Sie ein Shell-Script mydelete, das als Parameter eine Liste von Dateien hat. Diese Dateien sollen nun gelöscht werden. Das Shell-Script fragt aber für jede Datei nach, ob sie wirklich gelöscht werden soll. Nur bei der Antwort Ja wird sie gelöscht. Falls die Datei nicht existiert, geben Sie bitte eine Fehlermeldung aus und arbeiten die Liste weiterhin ab.</strong></p>
+<p>Lösung:</p>
+<pre><code class="prism language-shell">#! /usr/bin/sh
+​
+for i in $*	# Durchlaufe alle Parameter
+do
+	echo "-------------------"
+	echo "\033[0;36mFile:" $i "\33[0m"	#Ausgabe in Cyan
+	. /home/$USER/bin/myquestion "Are you sure you want to delete this file?";
+	res=$?
+	if [ "$res" == 0 ]; # Wenn Antwort Ja/Yes
+	then
+		if [ -f "$i" ];	# Überprüfe ob File existiert
+		then
+			rm -f $i;
+			echo "File deleted!"
+		else 
+			echo "\033[0;31mFile doesn't exist!\033[0m"	# Ausgabe in Rot
+		fi
+	fi
+done
+</code></pre>
+  </div>
 </body>
 
 </html>

@@ -19,9 +19,10 @@
 
 <body>
   <div class="export-container">
-    <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück zu Betriebssysteme Übersicht</a>
-    <h1 id="zweites-aufgabenblatt">Zweites Aufgabenblatt</h1>
+  <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück</a>
+  <h1 id="zweites-aufgabenblatt">Zweites Aufgabenblatt</h1>
 <hr>
+<h2 id="aufgabe-1">Aufgabe 1</h2>
 <p><strong>1 - Der Aufruf</strong> <code>int main(int argc, char* argv[])</code> <strong>kennt noch einen dritten Parameter. Wie lautet diese Parametervereinbarung? Welche Inhalte werden darüber erreicht? Welche zweite Möglichkeit gibt es noch, um auf die gleichen Inhalte zuzugreifen?</strong></p>
 <p>Als dritten Parameter kann man auch <code>char *envp[]</code> übergeben, welches alle aktuellen Umgebungsvariablen enthält. Über die C-Funktion <code>getenv()</code> enthält man ebenfalls die Umgebungsvariablen.</p>
 <p><strong>2 - Skizzieren Sie den Aufbau der Argumenten- bzw. der Umgebungsvariablenliste.</strong></p>
@@ -62,7 +63,143 @@ Im Kindprozess ist der Rückgabewert gleich 0.</p>
 <p><strong>7 - Was erbt ein Kindprozess vom Elternprozess beim fork()-Aufruf, und was bleibt beim exec()-Aufruf erhalten?</strong></p>
 <p><code>fork()</code> erzeugt einen neuen Prozess und bekommt somit eine neue PID. Alle Umgebungsvariablen werden vererbt. Bei <code>exec()</code> wird ein neues Programm in den aktuellen Prozess geladen, die PID bleibt also erhalten (es wird kein neuer Prozess erzeugt).</p>
 <p><strong>8 - Können nach dem Aufruf von fork() der Elternprozeß und der Kindprozeß noch Variablen oder Daten im jeweils anderen Prozeß manipulieren?</strong></p>
-<p>Nein, jeder Prozess hat seinen eigenen Umgebungskontext und -variablen. Der Kindprozess kann jedoch mit <code>return value</code> einen Wert zurückgeben der vom Elternprozess mit <code>waitpid()</code> abgefangen werden kann.</p></div>
+<p>Nein, jeder Prozess hat seinen eigenen Umgebungskontext und -variablen. Der Kindprozess kann jedoch mit <code>return value</code> einen Wert zurückgeben der vom Elternprozess mit <code>waitpid()</code> abgefangen werden kann.</p>
+<hr>
+<h2 id="aufgabe-2">Aufgabe 2</h2>
+<p><strong>Schreiben Sie ein C-Programm, das einen einfachen Taschenrechner simuliert. Es sollen nur die Operationen +, -, * und / für Zahlen vom Typ long ausgeführt werden. Bei der Division soll einfachheitshalber eine Integerdivision durchgeführt werden. Die Eingabe der Zahlen und Operationssymbole soll beim Programmstart erfolgen.<br>
+Die Abarbeitung der Operationen erfolgt von links nach rechts.<br>
+Ein Aufruf könnte z.B. lauten: ./a.out 3 + 5 – 2 x 5 / 2<br>
+Zur Konvertierung der Zahlen benutzen Sie bitte die Funktion strtol().Informieren Sie sich bitte genau über diese Funktion, damit Sie in der Lage sind, auch eine Null als Zahlenwert zuzulassen. Bei einer fehlerhaften Konvertierung oder unzulässigen Option geben Sie genau die Stelle aus und beenden das Programm.</strong></p>
+<p>Lösung:</p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token property">#include <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;stdlib.h&gt;</span></span>
+​
+<span class="token keyword">int</span> main <span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">int</span> i<span class="token punctuation">;</span>
+	<span class="token keyword">long</span> <span class="token keyword">int</span> res<span class="token punctuation">;</span>
+	<span class="token keyword">char</span> op<span class="token punctuation">;</span>
+	<span class="token keyword">char</span> <span class="token operator">*</span>p<span class="token punctuation">;</span>
+	
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>argc <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Aufruf: ./a.out &lt;zahl&gt;&lt;op&gt;&lt;zahl&gt; ...\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Bitte geben Sie mindestens einen Operanden an.\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+		res <span class="token operator">=</span> <span class="token function">strtol<span class="token punctuation">(</span></span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">*</span>p <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+			<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Aufruf: ./a.out &lt;zahl&gt;&lt;op&gt;&lt;zahl&gt; ...\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Ungueltiger Parameter: %s\n"</span><span class="token punctuation">,</span> argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span>
+		
+		<span class="token keyword">for</span> <span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span>argc<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+			<span class="token keyword">if</span> <span class="token punctuation">(</span>i<span class="token operator">%</span><span class="token number">2</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+				<span class="token keyword">switch</span><span class="token punctuation">(</span>op<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+					<span class="token keyword">case</span> <span class="token string">'+'</span><span class="token punctuation">:</span>
+						res <span class="token operator">+</span><span class="token operator">=</span> <span class="token function">strtol<span class="token punctuation">(</span></span>argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+						<span class="token keyword">break</span><span class="token punctuation">;</span>
+					<span class="token keyword">case</span> <span class="token string">'-'</span><span class="token punctuation">:</span>
+						res <span class="token operator">-</span><span class="token operator">=</span> <span class="token function">strtol<span class="token punctuation">(</span></span>argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+						<span class="token keyword">break</span><span class="token punctuation">;</span>
+					<span class="token keyword">case</span> <span class="token string">'x'</span><span class="token punctuation">:</span>
+						res <span class="token operator">*</span><span class="token operator">=</span> <span class="token function">strtol<span class="token punctuation">(</span></span>argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+						<span class="token keyword">break</span><span class="token punctuation">;</span>
+					<span class="token keyword">case</span> <span class="token string">'/'</span><span class="token punctuation">:</span>
+						res <span class="token operator">/</span><span class="token operator">=</span> <span class="token function">strtol<span class="token punctuation">(</span></span>argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+						<span class="token keyword">break</span><span class="token punctuation">;</span>
+					<span class="token keyword">default</span><span class="token punctuation">:</span> 
+						<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Ungueltiger Operator: %c\n"</span><span class="token punctuation">,</span> op<span class="token punctuation">)</span><span class="token punctuation">;</span>
+						<span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+				<span class="token punctuation">}</span>
+				
+				<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">*</span>p <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+					<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Aufruf: ./a.out &lt;zahl&gt;&lt;op&gt;&lt;zahl&gt; ...\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+					<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Ungueltiger Parameter: %s\n"</span><span class="token punctuation">,</span> argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+					<span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+				<span class="token punctuation">}</span> 
+				
+			<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+				op <span class="token operator">=</span> argv<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+			<span class="token punctuation">}</span>
+		<span class="token punctuation">}</span>
+			
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Ergebnis: %d\n"</span><span class="token punctuation">,</span> res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<hr>
+<h2 id="aufgabe-3">Aufgabe 3</h2>
+<p><strong>Schreiben Sie ein C-Programm, das zuerst eine Liste der Umgebungsvariablen ausgibt und anschließend die Umgebungsvariable BSPRAKTIKUM erzeugt und darin den Text ISTSUPER speichert. Anschließend liest man über die Tastatur eine Umgebungsvariable ein und prüft, ob sie existiert. Wenn ja, ist der Inhalt der Variablen auszugeben, sonst eine entsprechende Fehlermeldung.</strong></p>
+<p>Lösung:</p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token property">#include <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;stdlib.h&gt;</span></span>
+​
+<span class="token keyword">int</span> maint <span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span>argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span>envp<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">char</span> env<span class="token punctuation">[</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">char</span> <span class="token operator">*</span>value<span class="token punctuation">;</span>
+	<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Die aktuellen Umgebungsvariablen lauten: \n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">*</span>envp <span class="token operator">!=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"%s\n"</span><span class="token punctuation">,</span> <span class="token operator">*</span>envp<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	
+	<span class="token function">putenv<span class="token punctuation">(</span></span><span class="token string">"BSPRAKTIKUM=ISTSUPER"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"---------------------\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Zu pruefende Umgebungsvariable eingeben: "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">scanf<span class="token punctuation">(</span></span><span class="token string">"%s"</span><span class="token punctuation">,</span> env<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	value <span class="token operator">=</span> <span class="token function">getenv<span class="token punctuation">(</span></span>env<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">*</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"%s = %s\n"</span><span class="token punctuation">,</span> env<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Umgebungsvariable nicht gesetzt.\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<hr>
+<h2 id="aufgabe-4">Aufgabe 4</h2>
+<p><strong>Schreiben Sie ein C-Programm, in dem der Vaterprozess per Laufschleife drei Prozesse erzeugt, die zwanzig mal eine 1 (erster Prozess), eine 2 (zweiter Prozess) und eine 3 (dritter Prozess) ausgeben. Lassen Sie die Kindprozesse bei jedem Schleifendurchgang 1 Millisekunde warten. Der Vaterprozess soll per waitpid() auf das Ende der drei Kindprozesse warten und anschließend eine Abschlusssmeldung ausgeben.<br>
+Ändern Sie ihr Programm, in dem Sie nach jeder Zahlenausgabe eine Pufferentleerung von stdout programmieren. Erklären Sie die unterschiedlichen Ergebnisse.<br>
+So könnte z.B. die Ausgabe aussehen:<br>
+010210210210210210210210210210210210210210210210210210210212</strong></p>
+<p>Lösung:</p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token property">#include <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;stdlib.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;unistd.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;sys/wait.h&gt;</span></span>
+
+<span class="token keyword">int</span> <span class="token function">main<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">int</span> i<span class="token punctuation">,</span> j<span class="token punctuation">,</span> k<span class="token punctuation">;</span>
+	<span class="token keyword">int</span> zahl <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+	<span class="token keyword">int</span> pid<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">for</span> <span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span><span class="token number">3</span><span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		pid<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">fork<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>pid<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* Child Process */</span>
+			<span class="token keyword">for</span> <span class="token punctuation">(</span>j<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> j<span class="token operator">&lt;</span><span class="token number">20</span><span class="token punctuation">;</span> <span class="token operator">++</span>j<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+				<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"%i"</span><span class="token punctuation">,</span> zahl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token function">fflush<span class="token punctuation">(</span></span>stdout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+				<span class="token function">usleep<span class="token punctuation">(</span></span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token punctuation">}</span>
+			<span class="token function">exit<span class="token punctuation">(</span></span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>pid<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* Error */</span>
+			<span class="token function">perror<span class="token punctuation">(</span></span><span class="token string">"fork"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token function">exit<span class="token punctuation">(</span></span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span>
+		zahl<span class="token operator">++</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	
+	<span class="token keyword">for</span> <span class="token punctuation">(</span>k<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> k<span class="token operator">&lt;</span><span class="token number">3</span><span class="token punctuation">;</span> k<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">waitpid<span class="token punctuation">(</span></span>pid<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">,</span> NULL<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"\nAusgabe beendet."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> 
+</code></pre>
+  </div>
 </body>
 
 </html>

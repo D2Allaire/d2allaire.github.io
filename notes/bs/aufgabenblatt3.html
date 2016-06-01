@@ -19,9 +19,10 @@
 
 <body>
   <div class="export-container">
-    <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück zu Betriebssysteme Übersicht</a>
-    <h1 id="drittes-aufgabenblatt">Drittes Aufgabenblatt</h1>
+  <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück</a>
+  <h1 id="drittes-aufgabenblatt">Drittes Aufgabenblatt</h1>
 <hr>
+<h2 id="aufgabe-1">Aufgabe 1</h2>
 <p><strong>1 - Erklären Sie, wofür man eine Pipe benötigt!</strong></p>
 <p>Pipes verbinden die Standardausgabe eines Prozesses mit der Standardeingabe eines anderen Prozesses. Dadurch kann man verschiedene Programme miteinander verketten.</p>
 <p><strong>2 - Was ist die Voraussetzung für eine namenlose (unnamed) Pipe?</strong></p>
@@ -33,7 +34,163 @@ Ein Prozess muss schreibend und ein Prozess lesend sein. Da beide Prozesse stand
 <p>Named Pipes werden benutzt um Daten zwischen verschiedenen Prozessen auszutauschen. Named Pipes bleiben bestehen wenn die Prozesse beendet werden, es sei denn sie werden explizit durch unlink() geschlossen.</p>
 <p><strong>5 - Fehlermeldungen eines selbstgeschriebenen C-Programms sollen immer auf dem Bildschirm erscheinen, auch wenn die Standardausgabe in eine Datei oder eine Pipe gelenkt wird. Wie erreiche ich das?</strong></p>
 <p><em>(?)</em><br>
-Mit gcc werden Fehlermeldungen eines Programms immer auf der Konsole angezeigt, selbst wenn die Standardausgabe umgeleitet wird. <code>gcc test.c &gt; ausgabe</code> leitet also die Standardausgabe in <em>ausgabe</em> um, die Standardfehlerausgabe ist aber weiterhin die Konsole.</p></div>
+Mit gcc werden Fehlermeldungen eines Programms immer auf der Konsole angezeigt, selbst wenn die Standardausgabe umgeleitet wird. <code>gcc test.c &gt; ausgabe</code> leitet also die Standardausgabe in <em>ausgabe</em> um, die Standardfehlerausgabe ist aber weiterhin die Konsole.</p>
+<hr>
+<h2 id="aufgabe-2">Aufgabe 2</h2>
+<p><strong>Schreiben Sie ein C-Programm-System, dem beim Programmaufruf die beiden zu verbindenden Programme als Parameter ohne oder mit einer Option übergeben werden, die grundsätzlich mit einem Minuszeichen beginnt. Geben Sie Fehlermeldungen aus, wenn z.B. die Anzahl der Aufrufparameter nicht gültig ist, Aufrufe fehlgeschlagen sind usw. (Hinweis: Das Programm baut den einfachen Shellaufruf von  [-OPT] |  [-OPT] nach.)</strong></p>
+<p>Lösung:</p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token property">#include <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;errno.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;unistd.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;libgen.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;stdlib.h&gt;</span></span>
+​
+<span class="token keyword">int</span> main <span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	pid_t pid1<span class="token punctuation">,</span> pid2<span class="token punctuation">;</span>
+	<span class="token keyword">int</span> pipe_connect<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">char</span><span class="token operator">*</span> arg1<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* Erstes Argument (Kommando &amp; Option) */</span>
+	<span class="token keyword">char</span><span class="token operator">*</span> arg2<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* Zweites Argument (Kommando &amp; Option) */</span>
+	
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>argc <span class="token operator">&lt;</span> <span class="token number">3</span> <span class="token operator">||</span> <span class="token punctuation">(</span>argc <span class="token operator">==</span> <span class="token number">3</span> <span class="token operator">&amp;&amp;</span> argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token string">'-'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Usage: %s &lt;prog1&gt; [-option] &lt;prog2&gt; [-option]"</span><span class="token punctuation">,</span> <span class="token function">basename<span class="token punctuation">(</span></span>argv<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> EXIT_FAILURE<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>argc <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		arg1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+		arg2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>argc <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		arg1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token string">'-'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+			arg1<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+			arg2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+			arg2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+			arg2<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+		arg1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+		arg1<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+		arg2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+		arg2<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> argv<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	
+	<span class="token function">pipe<span class="token punctuation">(</span></span>pipe_connect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">fork<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* Kind 1: Standardausgabe mit Eingabe verbinden */</span>
+		<span class="token function">dup2<span class="token punctuation">(</span></span>pipe_connect<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">close<span class="token punctuation">(</span></span>pipe_connect<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* Read-End von Pipe schliessen, da von diesem Prozess nicht mehr benoetigt */</span>
+		<span class="token function">execlp<span class="token punctuation">(</span></span>arg1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> arg1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> arg1<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Kommando konnte nicht gestartet werden."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">exit<span class="token punctuation">(</span></span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">fork<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment" spellcheck="true">/* Kind 2: Standardeingabe mit Ausgabe verbinden */</span>
+		<span class="token function">dup2<span class="token punctuation">(</span></span>pipe_connect<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">close<span class="token punctuation">(</span></span>pipe_connect<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* Write-End von Pipe schliessen, da von diesem Prozess nicht mehr benoetigt */</span>
+		<span class="token function">execlp<span class="token punctuation">(</span></span>arg2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> arg2<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> arg2<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Kommando konnte nicht gestartet werden."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">exit<span class="token punctuation">(</span></span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+		<span class="token function">close<span class="token punctuation">(</span></span>pipe_connect<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">close<span class="token punctuation">(</span></span>pipe_connect<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">wait<span class="token punctuation">(</span></span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">wait<span class="token punctuation">(</span></span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<hr>
+<h2 id="aufgabe-3">Aufgabe 3</h2>
+<p><strong>Der Verschiebechiffre (auch Caesar-Chiffre genannt), ist eine Methode, mit der auf einfache Weise Texte verschlüsselt werden können. Dies geschieht durch Ersetzung von Buchstaben – bei ROT13 im Speziellen wird jeder Buchstabe des lateinischen Alphabets durch den im Alphabet um 13 Stellen davor bzw. dahinter liegenden Buchstaben ersetzt. (Anm. Es handelt sich um eine keinesfalls sichere Verschlüsselung nach heutigen Maßstäben).<br>
+Schreiben Sie zwei C-Programme, die eine Kommunikation zwischen Caesar (Sender) und einem Boten (Empfänger) implementiert, der eine verschlüsselte Nachricht mittels einer named pipe erhält. Lesen Sie dazu im Sender Eingaben (Wörter und Sätze) ein, die Sie mittels einer Funktion rot13(char a[], char b[]) „verschlüsseln“ und in eine named pipe schreiben. Der Empfänger soll die verschlüsselten Texte aus der named pipe auslesen und auf dem Bildschirm darstellen.<br>
+Wichtig sind hier die Funktionen mkfifo() und unlink(). Beachten Sie, falls die named pipe schon existiert, dass Sie dann vorher im Programm gelöscht werden muß.<br>
+Hinweis: Achten Sie bei der Implementierung auf die Verwendung von sicheren Funktionen zum Einlesen der Zeichenketten. Für die Umsetzung der rot13()-Funktion informieren Sie sich über die ascii-Codetabelle und beachten Sie Groß-Kleinschreibung.</strong></p>
+<p>Lösung:</p>
+<p><em>caesar.c</em></p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token property">#include <span class="token string">&lt;unistd.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;sys/types.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;sys/stat.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;fcntl.h&gt;</span></span>
+<span class="token property">#include <span class="token string">"rot13.h"</span></span>
+​
+<span class="token keyword">int</span> <span class="token function">main<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	FILE <span class="token operator">*</span>fp<span class="token punctuation">;</span>
+	<span class="token keyword">char</span> message<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">char</span> rot13_message<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">char</span> <span class="token operator">*</span> myfifo <span class="token operator">=</span> <span class="token string">"/home/miXXXX/namedpipe"</span><span class="token punctuation">;</span>
+	
+	<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"\nPlease enter your message: \n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">fgets<span class="token punctuation">(</span></span>message<span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> stdin<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* String einlesen */</span>
+	<span class="token function">rot13<span class="token punctuation">(</span></span>message<span class="token punctuation">,</span> rot13_message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token function">mkfifo<span class="token punctuation">(</span></span>myfifo<span class="token punctuation">,</span> <span class="token number">0666</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	fp <span class="token operator">=</span> <span class="token function">fopen<span class="token punctuation">(</span></span>myfifo<span class="token punctuation">,</span> <span class="token string">"w"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">fprintf<span class="token punctuation">(</span></span>fp<span class="token punctuation">,</span> <span class="token string">"%s"</span><span class="token punctuation">,</span> rot13_message<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">fclose<span class="token punctuation">(</span></span>fp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token function">unlink<span class="token punctuation">(</span></span>myfifo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em>receiver.c</em></p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token property">#include <span class="token string">&lt;fcntl.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;sys/stat.h&gt;</span></span>
+<span class="token property">#include <span class="token string">&lt;unistd.h&gt;</span></span>
+<span class="token property">#include <span class="token string">"rot13.h"</span></span>
+​
+<span class="token keyword">int</span> <span class="token function">main<span class="token punctuation">(</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	FILE <span class="token operator">*</span> fp<span class="token punctuation">;</span>
+	<span class="token keyword">char</span> str<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">char</span> deciphered<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token keyword">char</span> <span class="token operator">*</span> myfifo <span class="token operator">=</span> <span class="token string">"/home/miXXXX/namedpipe"</span><span class="token punctuation">;</span>
+	
+	fp <span class="token operator">=</span> <span class="token function">fopen<span class="token punctuation">(</span></span>myfifo<span class="token punctuation">,</span> <span class="token string">"r"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+	
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">fgets<span class="token punctuation">(</span></span>str<span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> fp<span class="token punctuation">)</span> <span class="token operator">!=</span> NULL<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">rot13<span class="token punctuation">(</span></span>str<span class="token punctuation">,</span> deciphered<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">printf<span class="token punctuation">(</span></span><span class="token string">"Deciphered Message: %s"</span><span class="token punctuation">,</span> deciphered<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	
+	<span class="token function">fclose<span class="token punctuation">(</span></span>fp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em>rot13.h</em></p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token keyword">void</span> <span class="token function">rot13<span class="token punctuation">(</span></span><span class="token keyword">char</span> <span class="token operator">*</span>a<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p><em>rot13.c</em></p>
+<pre class=" language-c"><code class="prism  language-c"><span class="token property">#include <span class="token string">"rot13.h"</span></span>
+​
+<span class="token keyword">void</span> <span class="token function">rot13<span class="token punctuation">(</span></span><span class="token keyword">char</span> <span class="token operator">*</span>a<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span>b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> lo <span class="token operator">=</span> <span class="token number">65</span><span class="token punctuation">,</span> hi <span class="token operator">=</span> <span class="token number">90</span><span class="token punctuation">,</span> diff <span class="token operator">=</span> <span class="token number">32</span><span class="token punctuation">,</span> rot <span class="token operator">=</span> <span class="token number">13</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    	<span class="token comment" spellcheck="true">/*uppercase*/</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&gt;</span> lo<span class="token number">-1</span> <span class="token operator">&amp;&amp;</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&lt;</span> hi<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        	<span class="token keyword">if</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">-</span>lo <span class="token operator">&lt;</span> rot<span class="token punctuation">)</span>
+            	b<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+</span> rot<span class="token punctuation">;</span>
+            <span class="token keyword">else</span>
+                b<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> rot<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">/*lowercase*/</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&gt;</span> lo<span class="token operator">+</span>diff<span class="token number">-1</span> <span class="token operator">&amp;&amp;</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&lt;</span> hi<span class="token operator">+</span>diff<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        	<span class="token keyword">if</span><span class="token punctuation">(</span>a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">-</span><span class="token punctuation">(</span>lo<span class="token operator">+</span>diff<span class="token punctuation">)</span> <span class="token operator">&lt;</span> rot <span class="token punctuation">)</span>
+            	b<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">+</span> rot<span class="token punctuation">;</span>
+            <span class="token keyword">else</span>
+                b<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> rot<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">/*no alpha*/</span>
+        <span class="token keyword">else</span>
+        	b<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> a<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            i<span class="token operator">++</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+    b<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+  </div>
 </body>
 
 </html>
