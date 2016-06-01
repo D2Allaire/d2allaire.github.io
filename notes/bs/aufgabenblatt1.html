@@ -74,78 +74,78 @@ Die Ausgabe der Größe des eigenen Homeverzeichnisses sollte in lesbaren MiBi e
 Challenge 1: statt  den “Real Name” ausgeben<br>
 Challenge 2: Überprüfung, ob der Speicherplatz die aktuelle Grenze von 250 MB annähert oder überschreitet und eine textliche oder farbliche Reaktion darauf</strong></p>
 <p>Lösung:</p>
-<pre><code class="prism language-shell">#! /usr/bin/sh
-hour=`date +%H`
-min=`date +%M`
-stor=`du -sm ~ | cut -f1` 
-maxstor=250
-realname=`ypcat passwd | grep $USER | cut -d: -f5`
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token comment" spellcheck="true">#! /usr/bin/sh
+</span>hour<span class="token operator">=</span>`<span class="token function">date</span> <span class="token operator">+</span><span class="token operator">%</span>H`
+min<span class="token operator">=</span>`<span class="token function">date</span> <span class="token operator">+</span><span class="token operator">%</span>M`
+stor<span class="token operator">=</span>`<span class="token function">du</span> <span class="token operator">-</span>sm <span class="token operator">~</span> <span class="token operator">|</span> <span class="token function">cut</span> <span class="token operator">-</span>f1` 
+maxstor<span class="token operator">=</span><span class="token number">250</span>
+realname<span class="token operator">=</span>`ypcat <span class="token function">passwd</span> <span class="token operator">|</span> <span class="token function">grep</span> <span class="token property">$USER</span> <span class="token operator">|</span> <span class="token function">cut</span> <span class="token operator">-</span>d<span class="token punctuation">:</span> <span class="token operator">-</span>f5`
 
-if [ $hour -lt 08 ]; then
-	echo "Guten Morgen, $realname ($USER)!"
-elif [ $hour -lt 12 ]; then
-	echo "Guten Tag, $realname ($USER)!"
-elif [ $hour -lt 18 ]; then
-	echo "Guten Nachmittag, $realname ($USER)!"
-elif { $hour lt 22 ]; then
-	echo "Guten Abend, $realname ($USER)!"
-else 
-	echo "Gute Nacht, $realname ($USER)!"
-fi
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token property">$hour</span> <span class="token operator">-</span>lt <span class="token number">08</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token keyword">echo</span> <span class="token string">"Guten Morgen, <span class="token property">$realname</span> (<span class="token property">$USER</span>)!"</span>
+<span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token property">$hour</span> <span class="token operator">-</span>lt <span class="token number">12</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token keyword">echo</span> <span class="token string">"Guten Tag, <span class="token property">$realname</span> (<span class="token property">$USER</span>)!"</span>
+<span class="token keyword">elif</span> <span class="token punctuation">[</span> <span class="token property">$hour</span> <span class="token operator">-</span>lt <span class="token number">18</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token keyword">echo</span> <span class="token string">"Guten Nachmittag, <span class="token property">$realname</span> (<span class="token property">$USER</span>)!"</span>
+<span class="token keyword">elif</span> <span class="token punctuation">{</span> <span class="token property">$hour</span> lt <span class="token number">22</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token keyword">echo</span> <span class="token string">"Guten Abend, <span class="token property">$realname</span> (<span class="token property">$USER</span>)!"</span>
+<span class="token keyword">else</span> 
+	<span class="token keyword">echo</span> <span class="token string">"Gute Nacht, <span class="token property">$realname</span> (<span class="token property">$USER</span>)!"</span>
+<span class="token keyword">fi</span>
 
-echo "Uhrzeit: $hour:$min"
+<span class="token keyword">echo</span> <span class="token string">"Uhrzeit: <span class="token property">$hour</span>:<span class="token property">$min</span>"</span>
 
-if [ $stor -gt $maxstor ]; then
-	echo "\033[0;31mSpeicherplatz ueberschritten: $stor/$maxstor MB\033[0m"
-elif (( ( $maxstor - $stor ) &lt; 50 )); then
-	echo "\033[1;33mSpeicherplatz: $stor/$maxstor MB\033[0m"
-else
-	echo "Speicherplatz: $stor/$maxstor MB"
-fi
+<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token property">$stor</span> <span class="token operator">-</span>gt <span class="token property">$maxstor</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token keyword">echo</span> <span class="token string">"\033[0;31mSpeicherplatz ueberschritten: <span class="token property">$stor</span>/<span class="token property">$maxstor</span> MB\033[0m"</span>
+<span class="token keyword">elif</span> <span class="token punctuation">(</span><span class="token punctuation">(</span> <span class="token punctuation">(</span> <span class="token property">$maxstor</span> <span class="token operator">-</span> <span class="token property">$stor</span> <span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">50</span> <span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token keyword">then</span>
+	<span class="token keyword">echo</span> <span class="token string">"\033[1;33mSpeicherplatz: <span class="token property">$stor</span>/<span class="token property">$maxstor</span> MB\033[0m"</span>
+<span class="token keyword">else</span>
+	<span class="token keyword">echo</span> <span class="token string">"Speicherplatz: <span class="token property">$stor</span>/<span class="token property">$maxstor</span> MB"</span>
+<span class="token keyword">fi</span>
 </code></pre>
 <hr>
 <h2 id="aufgabe-3">Aufgabe 3</h2>
 <p><strong>Schreiben Sie ein Shell-Script mit dem Namen myquestion. Dieses Script hat als Parameter den Text einer Frage, die mit Ja oder Nein beantwortet werden kann. Antwortet der Benutzer mit Ja, so liefert das Script den Rückgabewert 0, bei Nein wird 1 geliefert, andernfalls erscheint die Frage noch einmal. Wird das Shell-Script ohne Parameter oder mit mehr als einem Parameter aufgerufen, dann wird das Script abgebrochen und als Rückgabewert wird eine 2 übergeben.</strong></p>
 <p>Lösung:</p>
-<pre><code class="prism language-shell">#! /usr/bin/sh
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token comment" spellcheck="true">#! /usr/bin/sh
+</span>​
+<span class="token keyword">if</span> <span class="token punctuation">[</span> $<span class="token comment" spellcheck="true"># != 1 ]
+</span>	<span class="token keyword">then</span> <span class="token keyword">return</span> <span class="token number">2</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+<span class="token keyword">fi</span>
 ​
-if [ $# != 1 ]
-	then return 2;;
-fi
+<span class="token keyword">echo</span> <span class="token property">$1</span>
+<span class="token function">read</span> answer
 ​
-echo $1
-read answer
-​
-case $answer in
-	[Jj]* ) return 0 ;;
-	[Yy]* ) return 0 ;;
-	[Nn]* ) return 1 ;;
-	*) . /home/$USER/bin/myquestion ;;
+<span class="token keyword">case</span> <span class="token property">$answer</span> <span class="token keyword">in</span>
+	<span class="token punctuation">[</span>Jj<span class="token punctuation">]</span><span class="token operator">*</span> <span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token number">0</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+	<span class="token punctuation">[</span>Yy<span class="token punctuation">]</span><span class="token operator">*</span> <span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token number">0</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+	<span class="token punctuation">[</span>Nn<span class="token punctuation">]</span><span class="token operator">*</span> <span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token number">1</span> <span class="token punctuation">;</span><span class="token punctuation">;</span>
+	<span class="token operator">*</span><span class="token punctuation">)</span> <span class="token punctuation">.</span> <span class="token operator">/</span>home<span class="token operator">/</span><span class="token property">$USER</span><span class="token operator">/</span>bin<span class="token operator">/</span>myquestion <span class="token punctuation">;</span><span class="token punctuation">;</span>
 esac
 </code></pre>
 <hr>
 <h2 id="aufgabe-4">Aufgabe 4</h2>
 <p><strong>Erstellen Sie ein Shell-Script mydelete, das als Parameter eine Liste von Dateien hat. Diese Dateien sollen nun gelöscht werden. Das Shell-Script fragt aber für jede Datei nach, ob sie wirklich gelöscht werden soll. Nur bei der Antwort Ja wird sie gelöscht. Falls die Datei nicht existiert, geben Sie bitte eine Fehlermeldung aus und arbeiten die Liste weiterhin ab.</strong></p>
 <p>Lösung:</p>
-<pre><code class="prism language-shell">#! /usr/bin/sh
-​
-for i in $*	# Durchlaufe alle Parameter
-do
-	echo "-------------------"
-	echo "\033[0;36mFile:" $i "\33[0m"	#Ausgabe in Cyan
-	. /home/$USER/bin/myquestion "Are you sure you want to delete this file?";
-	res=$?
-	if [ "$res" == 0 ]; # Wenn Antwort Ja/Yes
-	then
-		if [ -f "$i" ];	# Überprüfe ob File existiert
-		then
-			rm -f $i;
-			echo "File deleted!"
-		else 
-			echo "\033[0;31mFile doesn't exist!\033[0m"	# Ausgabe in Rot
-		fi
-	fi
-done
+<pre class=" language-bash"><code class="prism  language-bash"><span class="token comment" spellcheck="true">#! /usr/bin/sh
+</span>​
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token property">$*</span>	<span class="token comment" spellcheck="true"># Durchlaufe alle Parameter
+</span><span class="token keyword">do</span>
+	<span class="token keyword">echo</span> <span class="token string">"-------------------"</span>
+	<span class="token keyword">echo</span> <span class="token string">"\033[0;36mFile:"</span> <span class="token property">$i</span> <span class="token string">"\33[0m"</span>	<span class="token comment" spellcheck="true">#Ausgabe in Cyan
+</span>	<span class="token punctuation">.</span> <span class="token operator">/</span>home<span class="token operator">/</span><span class="token property">$USER</span><span class="token operator">/</span>bin<span class="token operator">/</span>myquestion <span class="token string">"Are you sure you want to delete this file?"</span><span class="token punctuation">;</span>
+	res<span class="token operator">=</span><span class="token property">$?</span>
+	<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token string">"<span class="token property">$res</span>"</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true"># Wenn Antwort Ja/Yes
+</span>	<span class="token keyword">then</span>
+		<span class="token keyword">if</span> <span class="token punctuation">[</span> <span class="token operator">-</span>f <span class="token string">"<span class="token property">$i</span>"</span> <span class="token punctuation">]</span><span class="token punctuation">;</span>	<span class="token comment" spellcheck="true"># Überprüfe ob File existiert
+</span>		<span class="token keyword">then</span>
+			<span class="token function">rm</span> <span class="token operator">-</span>f <span class="token property">$i</span><span class="token punctuation">;</span>
+			<span class="token keyword">echo</span> <span class="token string">"File deleted!"</span>
+		<span class="token keyword">else</span> 
+			<span class="token keyword">echo</span> <span class="token string">"\033[0;31mFile doesn't exist!\033[0m"</span>	<span class="token comment" spellcheck="true"># Ausgabe in Rot
+</span>		<span class="token keyword">fi</span>
+	<span class="token keyword">fi</span>
+<span class="token keyword">done</span>
 </code></pre>
   </div>
 </body>
