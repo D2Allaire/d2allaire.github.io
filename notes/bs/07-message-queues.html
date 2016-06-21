@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 - Message Queues</title>
+<link rel="stylesheet" href="https://stackedit.io/res-min/themes/solarized-light.css" />
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+<style>
+.container {
+        width:750px;
+        margin-left:auto;
+        margin-right:auto;
+    }
+a {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+</style>
+</head>
+<body><div class="container">
+  <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück</a>
+  <h1 id="message-queues">Message Queues</h1>
+
+<p><strong>Message Queues</strong> sind neben Pipes, Shared Memory und Semaphoren eine vierte Art der Interprozesskommunikation. Sie sind im Grunde eine geordnete Nachrichtenliste die über einen Schlüssel identifiziert werden kann.</p>
+
+
+
+<h3 id="nutzung-von-message-queues-in-c">Nutzung von Message Queues in C</h3>
+
+<p>Die wichtigsten Befehle zur Nutzung von Message Queues in C sind:</p>
+
+
+
+<h5 id="msgget-anlegen-einer-neuen-oder-zugriff-auf-eine-bestehende-message-queue"><strong>msgget</strong> (Anlegen einer neuen oder Zugriff auf eine bestehende Message Queue)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">id = msgget(key, flag);
+<span class="hljs-comment">// =&gt; ID der Message Queue</span>
+<span class="hljs-comment">// key: Schlüssel zum identifizieren der MQ (selbst festgelegt)</span>
+<span class="hljs-comment">// flag: Zugriffsrechte (z.B. IPC_CREAT|0644) oder 0 zum Zugriff auf existierende MQ</span></code></pre>
+
+
+
+<h5 id="msgsnd-einfügen-von-nachrichten-in-die-message-queue"><strong>msgsnd</strong> (Einfügen von Nachrichten in die Message Queue)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">result = msgsnd(id, ptr, size, flag);
+<span class="hljs-comment">// =&gt; Integerwert der Aussage über den Erfolg gibt</span>
+<span class="hljs-comment">// id: ID der Message Queue</span>
+<span class="hljs-comment">// ptr: Vom Benutzer festgelegter Buffer in der Form [Typ | Daten] (realisiert als struct)</span>
+<span class="hljs-comment">// size: Größe der Daten</span>
+<span class="hljs-comment">// flag: Aktion für den Fall dass die Nachricht nicht geschickt werden kann</span></code></pre>
+
+
+
+<h5 id="msgrcv-entnahme-von-nachrichten-aus-der-message-queue"><strong>msgrcv</strong> (Entnahme von Nachrichten aus der Message Queue)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">result = msgrcv(id, ptr, size, type, flag);
+<span class="hljs-comment">// =&gt; Integerwert der Aussage über den Erfolg gibt</span>
+<span class="hljs-comment">// id: ID der Message Queue</span>
+<span class="hljs-comment">// ptr: Vom Benutzer festgelegter Buffer in der Form [Typ | Daten] in dem die empfangene Nachricht abgespeichert wird</span>
+<span class="hljs-comment">// size: Maximale Nachrichtengröße der Daten (dadrüber wird abgeschnitten)</span>
+<span class="hljs-comment">// type: Legt fest welche Nachricht ausgewählt wird</span>
+<span class="hljs-comment">// flag: Aktion die ausgeführt werden soll wenn Nachricht nicht verfügbar ist (z.B. IPC_NOWAIT</span></code></pre>
+
+<p>Erläuterung zu <em>type</em> (aus msgrcv):</p>
+
+<blockquote>
+  <p>Wenn <em>type</em> = 0: erste Nachricht wird ausgewählt <br>
+  Wenn <em>type</em> &gt; 0: erste Nachricht dieses Typs wird ausgewählt <br>
+  Wenn <em>type</em> &lt; 0: erste Nachricht des niedrigsten Typs &lt;= |type| <br>
+  Somit können Prioritäten implementiert werden. Beispielsweise: 1-5 <em>Hohe Priorität</em>, 6-10 <em>Mittlere Priorität</em> und 11-15 <em>Hohe Priorität</em>: <br>
+  - <code>msgrcv(_, _, _, -5, _)</code> -&gt; Ruft erste Nachricht mit hoher Priorität ab. <br>
+  - <code>msgrcv(_, _, _, -10, _)</code> -&gt; Ruft erste Nachricht mit mittlerer Priorität ab.</p>
+</blockquote>
+
+<p>Erklärung zu benutzerdefiniertem Buffer:</p>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs "><span class="hljs-keyword">struct</span> message {
+    <span class="hljs-keyword">long</span> mtype; <span class="hljs-comment">/* Nachrichtentyp (Priorität) */</span>
+    <span class="hljs-keyword">char</span> mtext[<span class="hljs-number">100</span>]; <span class="hljs-comment">/* Nachrichtentext */</span>
+};</code></pre></div></body>
+</html>

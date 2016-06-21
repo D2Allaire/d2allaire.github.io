@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 - Shared Memory</title>
+<link rel="stylesheet" href="https://stackedit.io/res-min/themes/solarized-light.css" />
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+<style>
+.container {
+        width:750px;
+        margin-left:auto;
+        margin-right:auto;
+    }
+a {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+</style>
+</head>
+<body><div class="container">
+  <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück</a>
+  <h1 id="shared-memory">Shared Memory</h1>
+
+<p><strong>Shared Memory</strong> ermöglicht eine sehr effiziente Kommunikation zwischen Prozessen. Während bei Pipes lediglich eine 1:1 Kommunikation möglicht ist, können mit Shared Memory beliebig viele Prozesse in einer N:M Kommunikation arbeiten.  <br>
+Da allerdings im Gegensatz zu Pipes keine Synchronisation zwischen Prozessen zum Einsatz kommt, kann es zum Auftauchen von <strong>Race Conditions</strong> kommen. </p>
+
+<p>Race Conditions sind Situationen, in denen zwei oder mehr Prozesse gemeinsame Betriebsmittel nutzen (also z.B. Shared Memory) und wo die Endergebnisse von der zeitlichen Reihenfolge der Operationen abhängen. Es kann also zum Überschreiben von Werten kommen. </p>
+
+<p>Um dies zu verhindern, müssen wir erzwingen, dass nicht mehr als ein Prozess gleichzeitig die gemeinsam benutzten Daten liest oder schreibt. Falls ein Prozess eine gemeinsam benutzte Variable verändert, müssen alle anderen Prozesse davon ausgeschlossen werden diese zu verwenden (<em>Wechselseitiger Ausschluss</em>).</p>
+
+<p>Es gibt drei Möglichkeiten den wechselseitigen Ausschluss zu realisieren:</p>
+
+<blockquote>
+  <p><strong>Sperren aller Unterbrechungen</strong> (Hardware-Lösung): Ein Prozess der in seinen kritischen Bereich eintritt, sperrt alle Unterbrechungen und lässt sie erst wieder zu wenn er den kritischen Bereich verlässt. Nicht praktikabel für User-Prozesse, da Gefahr des Systemstillstands. </p>
+  
+  <p><strong>Aktives Warten</strong> (Software-Lösung): </p>
+</blockquote>
+
+
+
+<h3 id="nutzung-von-shared-memory-in-c">Nutzung von Shared Memory in C</h3>
+
+<p>Die wichtigsten Befehle zur Nutzung von Shared Memory in C sind:</p>
+
+
+
+<h5 id="shmget-legt-ein-neues-segment-an-oder-greift-auf-ein-existierendes-zu"><strong>shmget</strong> (Legt ein neues Segment an oder greift auf ein existierendes zu)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">id = shmget(key, size, flag); 
+<span class="hljs-comment">// =&gt; id = Index des neuen Segments.</span>
+<span class="hljs-comment">// key: Meist IPC_PRIVATE (Unix erzeugt Schlüssel selbst)</span>
+<span class="hljs-comment">// size: Größe des Shared Memory Segments (bspw. sizeof(int)</span>
+<span class="hljs-comment">// flag: Zugriffsrechte (z.B. IPC_CREAT|0600)</span></code></pre>
+
+
+
+<h5 id="shmat-hängt-ein-segment-an-den-adressraum-des-aufrufenden-prozesses-an"><strong>shmat</strong> (Hängt ein Segment an den Adressraum des aufrufenden Prozesses an)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">ptr = shmat(id, addr, flag); 
+<span class="hljs-comment">// =&gt; ptr = Anfangsadresse des Prozesses an die das Segment angebunden wurde.</span>
+<span class="hljs-comment">// id: ID des Segments</span>
+<span class="hljs-comment">// flag &amp; addr: Meist 0</span></code></pre>
+
+
+
+<h5 id="shmdt-entfernt-ein-segment-aus-dem-adressraum-des-aufrufenden-prozesses"><strong>shmdt</strong> (Entfernt ein Segment aus dem Adressraum des aufrufenden Prozesses)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">result = shmdt(addr) 
+<span class="hljs-comment">// =&gt; result = Integerwert der Aussage über den Erfolg gibt</span>
+<span class="hljs-comment">// addr: Adresse des Segments (ptr aus shmat)</span></code></pre>
+
+
+
+<h5 id="shmctl-steuerungsfunktionen-für-shared-memory-segment"><strong>shmctl</strong> (Steuerungsfunktionen für Shared Memory Segment)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">result = shmctl(id, cmd, buffer) 
+<span class="hljs-comment">// =&gt; result = Integerwert der Aussage über den Erfolg gibt</span>
+<span class="hljs-comment">// id: ID des Segments</span>
+<span class="hljs-comment">// cmd: Auszuführende Kommando (z.B. IPC_RMID zum löschen)</span>
+<span class="hljs-comment">// buffer: Parameter für das Kommando</span></code></pre>
+
+
+
+<h3 id="prozessmodell">Prozessmodell</h3>
+
+<p>Ein <strong>Prozess</strong> ist ein Programm in Ausführung. Ein Prozessmodell erleichtert die Beschreibung von Prozessen und deren Synchronisation. </p>
+
+<p>Im Prozessmodell hat jeder Prozess seinen eigenen <em>virtuellen</em> Prozessor, auch wenn der <em>reale</em> Prozessor in Wirklichkeit schnell zwischen den Prozessen wechselt, und immer nur ein Prozess im Prozessor aktiv ist (Pseudoparallelität).</p>
+
+<p>Ein Prozess befindet sich immer in einem der drei Zustände <em>active</em> (wird momentan vom Prozessor bearbeitet), <em>ready</em> (ist bereit aber ihm wurde noch kein Prozessor zugewiesen) oder <em>blocked</em> (Prozess kann nicht ausgeführt werden bis ein externes Ereignis auftritt).</p>
+
+<p>In der <strong>Prozesstabelle</strong> stehen die PIDs der aktiven Prozesse, mit Verweisen auf die jeweiligen <strong>Process Control Blocks</strong> (enthalten alle zur Verwaltung notwendigen Informationen eines Prozesses).</p></div></body>
+</html>

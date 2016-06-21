@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 - Semaphoren</title>
+<link rel="stylesheet" href="https://stackedit.io/res-min/themes/solarized-light.css" />
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+<style>
+.container {
+        width:750px;
+        margin-left:auto;
+        margin-right:auto;
+    }
+a {
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+</style>
+</head>
+<body><div class="container">
+    <a href="index.html" style="display: inline-block; margin-top: 20px;">Zurück</a>
+    <h1 id="semaphore">Semaphore</h1>
+
+<p><strong>Semaphore</strong> sind Sperrmechanismen, die Prozesse unter bestimmten Bedingungen blockieren. Der Semaphor Datentyp besteht aus:</p>
+
+<ul>
+<li><code>INTEGER COUNT</code>: Registriert Wecksignale. Falls <em>COUNT == 0</em> ist kein Wecksignal zu berücksichtigen. </li>
+<li><code>DOWN()</code>: Verallgemeinerung von <em>sleep</em>. Falls <em>COUNT &gt; 0</em> wird COUNT um 1 reduziert. Falls <em>COUNT == 0</em> wird der Prozess schlafengelegt. </li>
+<li><code>UP()</code>: Verallgemeinerung von <em>wake</em>. COUNT wird um 1 erhöht. Falls der Warteraum nicht leer ist, wird ein wartender Prozess aufgeweckt.</li>
+</ul>
+
+<p>Beispiel Erzeuger-Verbraucher:</p>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs "><span class="hljs-keyword">void</span> erzeuger() {
+    <span class="hljs-keyword">int</span> teil;
+    <span class="hljs-keyword">while</span> (TRUE) {
+        produziere_teil(&amp;teil);
+        LEER.DOWN(); <span class="hljs-comment">/* Ein leeres Feld weniger */</span>
+        W_Ausschluss.DOWN(); <span class="hljs-comment">/* Eintritt kritischer Bereich */</span>
+        einfuegen_puffer(teil);
+        W_Ausschluss.UP(); <span class="hljs-comment">/* Verlassen kritischer Bereich */</span>
+        VOLL.UP(); <span class="hljs-comment">/* Ein volles Feld mehr */</span>
+    }
+}
+
+<span class="hljs-keyword">void</span> verbraucher() {
+    <span class="hljs-keyword">int</span> teil;
+    <span class="hljs-keyword">while</span> (TRUE) {
+        VOLL.DOWN(); <span class="hljs-comment">/* Ein volles Feld weniger */</span>
+        W_Ausschluss.DOWN(); <span class="hljs-comment">/* Eintritt kritischer Bereich */</span>
+        entnimm_puffer(&amp;teil);
+        W_Ausschluss.UP(); <span class="hljs-comment">/* Verlassen kritischer Bereich */</span>
+        LEER.UP(); <span class="hljs-comment">/* Ein leeres Feld mehr */</span>
+        verarbeite_teil(teil);
+    }
+}</code></pre>
+
+<p>Die Reihenfolge der Befehle ist wichtig (also alternierend <em>kritischer Bereich</em> und <em>nicht kritischer Bereich</em>), ansonsten kann es zum <strong>Deadlock</strong> kommen. </p>
+
+
+
+<h3 id="nutzung-von-semaphoren-in-c">Nutzung von Semaphoren in C</h3>
+
+<p>Die wichtigsten Befehle zur Nutzung von Semaphoren in C sind:</p>
+
+
+
+<h5 id="semget-anlegen-einer-neuen-oder-zugriff-auf-eine-bestehende-semaphorengruppe"><strong>semget</strong> (Anlegen einer neuen oder Zugriff auf eine bestehende Semaphorengruppe)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">id = semget(key, nsems, flag);
+<span class="hljs-comment">// =&gt; ID der Semaphorengruppe</span>
+<span class="hljs-comment">// key: Meist IPC_PRIVATE (Unix erzeugt Schlüssel selbst)</span>
+<span class="hljs-comment">// nsems: Anzahl Semaphore in der Gruppe</span>
+<span class="hljs-comment">// flag: Zugriffsrechte (z.B. IPC_CREAT|0644)</span></code></pre>
+
+
+
+<h5 id="semop-ausführen-von-operationen"><strong>semop</strong> (Ausführen von Operationen)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">result = semop(id, sops, nsops);
+<span class="hljs-comment">// =&gt; Integerwert der Aussage über den Erfolg gibt</span>
+<span class="hljs-comment">// id: ID der Semaphorengruppe</span>
+<span class="hljs-comment">// sops: Folge der Semaphoroperationen</span>
+<span class="hljs-comment">// nsops: Anzahl der Operationen</span></code></pre>
+
+<p><em>sops</em> ist ein struct:</p>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs "><span class="hljs-keyword">struct</span> sembuf {
+    <span class="hljs-keyword">short</span> sem_num; <span class="hljs-comment">/* Nummer des Semaphors innerhalb der Gruppe */</span>
+    <span class="hljs-keyword">short</span> sem_op; <span class="hljs-comment">/* Operation, bei &gt; 0 -&gt; UP(), bei &lt; 0 -&gt; DOWN(), in jedem Fall COUNT +
+
+= sem_op */</span>
+    <span class="hljs-keyword">short</span> sem_flg; <span class="hljs-comment">/* Steuerungsflags */</span>
+};</code></pre>
+
+
+
+<h5 id="semctl-steuerungsfunktionen-für-semaphoren"><strong>semctl</strong> (Steuerungsfunktionen für Semaphoren)</h5>
+
+
+
+<pre class="prettyprint"><code class="language-c hljs ">result = semctl(id, nsem, cmd, arg);
+<span class="hljs-comment">// =&gt; Integerwert der Aussage über den Erfolg gibt</span>
+<span class="hljs-comment">// id: ID der Semaphorengruppe</span>
+<span class="hljs-comment">// nsem: Anzahl der Semaphore</span>
+<span class="hljs-comment">// cmd: Auszuführendes Kommando (z.B. IPC_RMID zum löschen)</span>
+<span class="hljs-comment">// arg: Parameter für das Kommando</span></code></pre></div></body>
+</html>
