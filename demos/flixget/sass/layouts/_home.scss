@@ -1,0 +1,103 @@
+/* Home Page Styles
+   ========================================================================== */
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    background: #86313c; // Old Browsers
+    background: -webkit-linear-gradient(#ea524e 0%, #86313c 50%, #271224 100%) fixed;
+    background: -o-linear-gradient(#ea524e 0%, #86313c 50%, #271224 100%) fixed;
+    background: linear-gradient(#ea524e 0%, #86313c 50%, #271224 100%) fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+#app {
+    background-color: $color-light-1;
+    border-radius: 1rem;
+    width: 95%;
+    margin: 0 auto 40px auto;
+    padding-bottom: 20px;
+    -webkit-box-shadow: -2px 2px 36px -2px rgba(0,0,0,0.5);
+    -moz-box-shadow: -2px 2px 36px -2px rgba(0,0,0,0.5);
+    box-shadow: -2px 2px 36px -2px rgba(0,0,0,0.5);
+}
+
+header h3 {
+    text-align: center;
+    margin-top: 5px;
+    span:after {
+        content: ' - ';
+    }
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 0;
+}
+
+h2 {
+    padding-top: 15px;
+    margin-bottom: 5px;
+}
+
+ul {
+    text-align: center;
+    padding-left: 0;
+    margin-top: 0;
+}
+
+.title li {
+    display: inline-block;
+    &:not(:last-child) {
+        padding-right: 10px;
+    }
+}
+
+.poster {
+    height: 250px;
+    background-image: url('../img/poster.jpg');
+    background-size: cover;
+    background-position: top center;
+    background-repeat: none;
+}
+
+.meta {
+    padding: 20px 0;
+    background-color: $color-light-2;
+    -webkit-box-shadow: 0px -4px 31px -9px rgba(0,0,0,0.75), 0px 7px 31px -9px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px -4px 31px -9px rgba(0,0,0,0.75), 0px 7px 31px -9px rgba(0,0,0,0.5);
+    box-shadow: 0px -4px 31px -9px rgba(0,0,0,0.75), 0px 7px 31px -9px rgba(0,0,0,0.5);
+
+    h3:first-child {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+}
+
+.meta__rating {
+    background-color: $color-rating-good;
+    border-radius: 50%;
+    color: $color-light-1;
+    font-size: 1.2rem;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.action__buttons {
+    margin-top: 20px;
+
+    .button:nth-of-type(2){
+        float: right;
+    }
+}

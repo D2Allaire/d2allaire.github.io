@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="eng">
+
+<head>
+    <title>Flixget</title>
+
+    <meta charset="utf-8">
+    <meta name="description" content="Your daily Netflix movie suggestion.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header>
+        <h1>Today I'm Watching...</h1>
+        <h3><span>Flixget</span>Your Daily Netflix Suggestion</h3>
+    </header>
+    <main>
+        <div id="app">
+            <div class="title">
+                <h2>Charlie's Country</h2>
+                <ul>
+                    <li>2013</li>
+                    <li>104 min</li>
+                    <li>English</li>
+                    <li>Drama</li>
+                </ul>
+            </div>
+            <div class="poster">
+            </div>
+            <div class="meta">
+                <div class="container">
+                    <h3>Description</h3>
+                    <p>Blackfella Charlie is out of sorts. The intervention is making life more difficult on his remote community, what with the proper policing of whitefella laws now. So Charlie takes off, to live the old way, but in so doing sets off a chain of events in his life that has him return to his community chastened, and somewhat the wiser.</p>
+                    <h3>Rating</h3>
+                    <p>IMDB: <span class="meta__rating">7.2</span></p>
+                    <p><a href="#">See entry on IMDB</a></p>
+                    <h3>Available Countries</h3>
+                    <div class="meta_flags">
+                    </div>
+                </div>
+            </div>
+            <div class="action container">
+                <p><a href="#">Login Now</a> or <a href="#">Sign Up</a> to be able to mark movies as watched and only receive unique suggestions</p>
+                <select>
+                    <option>Unites States</option>
+                    <option>Sweden</option>
+                    <option>Germany</option>
+                    <option>United Kingdom</option>
+                    <option>India</option>
+                    <option>Australia</option>
+                    <option>Belgium</option>
+                    <option>Brazil</option>
+                    <option>Canada</option>
+                </select>
+                <div class="action__buttons">
+                    <button class="button button--secondary">Watch on Netflix</button>
+                    <button class="button button--primary">Suggest New</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script
+        src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+        integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="
+        crossorigin="anonymous">
+    </script>
+    <script src="js/vendor/jquery.nice-select.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('select').niceSelect();
+        });
+    </script>
+</body>
+</html>

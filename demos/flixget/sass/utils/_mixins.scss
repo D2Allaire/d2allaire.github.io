@@ -1,0 +1,42 @@
+/* Utility Mixins
+   ========================================================================== */
+
+@mixin button-variant($color, $color-bg) {
+    color: $color;
+    background-color: $color-bg;
+    
+    
+    &:focus,
+    &.focus {
+        color: $color;
+        background-color: darken($color-bg, 10%);
+    }
+
+    &:hover {
+        color: $color;
+        background-color: darken($color-bg, 10%);
+    }
+
+    &:active,
+    &.active {
+        color: $color;
+        background-color: darken($color-bg, 10%);
+
+        &:hover,
+        &:focus,
+        &.focus {
+            color: $color;
+            background-color: darken($color-bg, 17%);
+        }
+    }
+
+    &.disabled,
+    &[disabled],
+    fieldset[disabled] & {
+        &:hover,
+        &:focus,
+        &.focus {
+        background-color: $color-bg;
+        }
+    }
+}

@@ -1,0 +1,56 @@
+/* Typography Styles
+   ========================================================================== */
+
+html {
+  font-size: 62.5%;
+  font-family: $font-primary;
+}
+
+h1 {
+    font-family: $font-cursive;
+    color: $color-light-3;
+    font-size: 4rem;
+    font-weight: 300;
+}
+
+h2 {
+    color: $color-dark-1;
+    font-weight: 600;
+    font-size: 2rem;
+}
+
+h2, h3 {
+    text-transform: uppercase;
+}
+
+header h3 {
+    color: $color-light-3;
+    font-weight: 300;
+}
+
+.meta h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: $color-text-dark;
+}
+
+p {
+    font-size: 1.6rem;
+    color: $color-text-light;
+    line-height: 135%;
+}
+
+li {
+    color: $color-text-light;
+    font-size: 1.7rem;
+}
+
+a {
+    text-decoration: none;
+    color: $color-link;
+
+    &:hover, &:focus, &:active {
+        text-decoration: none;
+        color: darken($color-link, 20%);
+    } 
+}
