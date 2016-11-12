@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->  
+<head>
+    <title>Responsive Resume/CV Template for Developers</title>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <link rel="shortcut icon" href="favicon.ico">  
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,400italic,300italic,300,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">   
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.css">
+    
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="assets/css/styles.css">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head> 
+
+<body>
+    <div class="wrapper">
+        <div class="sidebar-wrapper">
+            <div class="profile-container">
+                <img class="profile" src="assets/images/profile.png" alt="" />
+                <h1 class="name">Elisha Witte</h1>
+                <h3 class="tagline">Junior Developer</h3>
+            </div><!--//profile-container-->
+            
+            <div class="contact-container container-block">
+                <ul class="list-unstyled contact-list">
+                    <li class="email"><i class="fa fa-envelope"></i><a href="mailto: elisha@ewitte.me">elisha@ewitte.me</a></li>
+                    <li class="phone"><i class="fa fa-phone"></i><a href="tel:0123 456 789">0171 1898 567</a></li>
+                    <li class="github"><i class="fa fa-github"></i><a href="http://github.com/D2Allaire" target="_blank">github.com/D2Allaire</a></li>
+                    <li class="twitter"><i class="fa fa-twitter"></i><a href="https://twitter.com/D2Allaire" target="_blank">@D2Allaire</a></li>
+                </ul>
+            </div><!--//contact-container-->
+            <div class="education-container container-block">
+                <h2 class="container-block-title">Ausbildung</h2>
+                <div class="item">
+                    <h4 class="degree">BSc in Medieninformatik</h4>
+                    <h5 class="meta">TH Köln</h5>
+                    <div class="time">2014 - (5. Semester)</div>
+                </div><!--//item-->
+            </div><!--//education-container-->
+            
+            <div class="languages-container container-block">
+                <h2 class="container-block-title">Sprachkentnisse</h2>
+                <ul class="list-unstyled interests-list">
+                    <li>Deutsch <span class="lang-desc">(Muttersprache)</span></li>
+                    <li>Englisch <span class="lang-desc">(Fließend)</span></li>
+                    <li>Spanisch <span class="lang-desc">(Fließend)</span></li>
+                </ul>
+            </div><!--//languages-->
+                        
+        </div><!--//sidebar-wrapper-->
+        
+        <div class="main-wrapper">
+
+            <section class="section summary-section">
+                <h2 class="section-title"><i class="fa fa-user"></i>Profil</h2>
+                <div class="summary">
+                    <p>Ich studiere zur Zeit Medieninformatik an der TH Köln im 5. Semester. Privat beschäftigte ich mich bereits seit mehreren Jahren mit der Webentwicklung, aber bin erst durch das Studium tiefer in die (insbesondere Backend-) Entwicklung eingestiegen.</p>
+                    <p>Sprachen/Frameworks/Tools die ich benutzt habe bzw. mit denen ich zumindest teilweise vertraut bin:</p>
+                    <div class="tech">PHP, Laravel, Javascript, NodeJS, Express, SQL (ORACLE, MySQL, SQLite), Redis</div>
+                    <div class="tech">HTML5, CSS3, SASS, Javascript (+ ES6), VueJS, JQuery</div>
+                    <div class="tech">Webpack, Vagrant, Ubuntu, Shell</div>
+                </div><!--//summary-->
+            </section><!--//section-->
+            
+            <section class="section projects-section">
+                <h2 class="section-title"><i class="fa fa-archive"></i>Projekte</h2>
+                <div class="intro">
+                    <p>Folgend eine Auflistung an einigen Projekten an denen ich privat oder im Rahmen des Studiums gearbeitet habe.</p>
+                </div><!--//intro-->
+                <div class="item">
+                    <div class="meta">
+                        <div class="upper-row">
+                            <h3 class="project-title">AMVS-CO</h3>
+                            <div class="time">2016</div>
+                        </div><!--//upper-row-->
+                        <div class="tech">PHP (Laravel), MySQL / HTML5, SCSS, Javascript (VueJS + Vue-Router + Vuex)</div>
+                        <div class="links">
+                            <a href="http://amvs.co"><i class="fa fa-globe"></i>Website</a>
+                            <a href="https://github.com/D2Allaire/amvs-co"><i class="fa fa-github"></i>Github</a>
+                        </div>
+                    </div><!--//meta-->
+                    <div class="details">
+                        <p>Website die als AMV-Katalog dient <em>(AMV = Anime Music Video)</em>. Mitglieder können AMVs erstellen, bearbeiten, löschen sowie Awards eintragen.</p>
+                        <p>Backend mit PHP (Laravel Framework) + MySQL.</p>
+                        <p>Frontend mit Blade (Laravel Templating Engine), HTML, SASS, Javascript. Für das CSS wurden Teilmodule von Bootstrap (Grid) und MaterializeCSS (i.e. Cards) + eigenes CSS verwendet. Das User Dashboard ist komplett als SPA implementiert mit VueJS + Vue-Router (Client-Side Routing) + Vuex (State Managament)</p>
+                        <p><em>Die Website ist noch WIP und vor kurzem erst deployed, manche Features wie File-Upload funktionieren nur lokal und noch nicht auf dem Server</em></p>
+                    </div><!--//details-->
+                </div><!--//item-->
+                <div class="item">
+                    <div class="meta">
+                        <div class="upper-row">
+                            <h3 class="project-title">TodoPath</h3>
+                            <div class="time">2016</div>
+                        </div><!--//upper-row-->
+                        <div class="tech">Java, SQLite</div>
+                        <div class="links">
+                            <a href="https://github.com/D2Allaire/TodoPath"><i class="fa fa-github"></i>Github</a>
+                            <a href="http://ewitte.me/docs/todopath-poster.pdf"><i class="fa fa-gears"></i>Architektur<a>
+                            <a href="http://ewitte.me/docs/todopath-docs.pdf"><i class="fa fa-file-pdf-o"></i>Dokumentation</a>
+                        </div>
+                    </div><!--//meta-->
+                    <div class="details">
+                        <p>Einfache Android Todo-Applikation enstanden im Rahmen des Studiums zum Erstellen und Verwalten von Todos. Benutzer können Listen erstellen (i.e. 'Work', 'Shopping', ...) und diesen Listen Todos hinzufügen. Todos können optional mit Kontakten verknüpft werden. Wenn ein Fälligkeitsdatum angegeben wurde wird der Benutzer über eine Notification benachrichtigt sobald das Todo fällig ist.</p> 
+                    </div><!--//details-->
+                </div><!--//item-->
+
+                <div class="item">
+                    <div class="meta">
+                        <div class="upper-row">
+                            <h3 class="project-title">Flixget</h3>
+                            <div class="time">2016</div>
+                        </div><!--//upper-row-->
+                        <div class="tech">Javascript, NodeJS + Express, Redis, HTML, SCSS, JQuery</div>
+                        <div class="links">
+                            <a href="https://github.com/D2Allaire/WBA2SS16FuchsSchererWitte"><i class="fa fa-github"></i>Github</a>
+                            <a href="http://ewitte.me/demos/flixget/"><i class="fa fa-globe"></i>Design-Demo</a>
+                            <a href="https://github.com/D2Allaire/WBA2SS16FuchsSchererWitte/wiki"><i class="fa fa-file-pdf-o"></i>Dokumentation</a>
+                        </div>
+                    </div><!--//meta-->
+                    <div class="details">
+                        <p>Flixget ist eine Webanwendung, welche beim Aufruf einen zufälligen auf Netflix verfügbaren Film vorschlägt. Hierbei kann nach Netflix-Region gefiltert werden. Benutzer können sich ebenso registrieren und Filme als gesehen markieren, um so keine wiederholten Empfehlungen zu bekommen.</p>
+                        <p>Flixget ist nach dem SOA-Prinzip strukturiert. Der Dienstgeber bietet eine stateless RESTful API an welche der Dienstnutzer konsumiert. Ursprünglich enstanden im Rahmen des Studiums. Der Dienstgeber (NodeJS, Redis) ist komplett fertig, der Dienstnutzer leider nur im Ansatz (Benutzerauthentifizierung fehlt). Redis war als primäre Datenbank vorgegeben. Ich arbeite gerade an einer Re-Implementierung mit AdonisJS (NodeJS Framework) + VueJS Frontend. Die verlinkte Design-Demo zeigt das aktuelle Design mit Mobile-First Ansatz.</p>
+                    </div><!--//details-->
+                </div><!--//item-->
+
+                <div class="item">
+                    <div class="meta">
+                        <div class="upper-row">
+                            <h3 class="project-title">Tournament Register</h3>
+                            <div class="time">2015</div>
+                        </div><!--//upper-row-->
+                        <div class="tech">PHP, MySQL, HTML/CSS/JQuery</div>
+                        <div class="links">
+                            <a href="https://github.com/D2Allaire/Tournament-Register"><i class="fa fa-github"></i>Github</a>
+                            <a href="http://tourr.io/register/"><i class="fa fa-globe"></i>Website</a>
+                        </div>
+                    </div><!--//meta-->
+                    <div class="details">
+                        <p>Das Tournament Register bietet eine Übersicht über alle aktuellen Amateur-Turniere in dem eSports-Spiel Dota 2. Benutzer können selber Turniere eintragen. Ebenfalls enthalten ist ein komplettes Admin-Panel in dem Events und Submissions verwaltet werden können.</p>
+                        <p>Mit dieser Website habe ich den ersten Kontakt mit Backend-Development und PHP gemacht, weswegen die Architektur und Codebasis sicher nicht sehr schön/sauber ist. Das ganze Backend ist in plain PHP geschrieben, ohne Framework.</p>
+                        <p>Für das Frontend wurde MaterializeCSS benutzt.</p>
+                        <p><em>Das Projekt ist inzwischen verlassen und die Domain läuft am 20.11.2016 aus</em></p> 
+                    </div><!--//details-->
+                </div><!--//item-->
+                
+            </section><!--//section-->
+            
+            <section class="skills-section section">
+                <h2 class="section-title"><i class="fa fa-rocket"></i>Skills &amp; Proficiency</h2>
+                <div class="skillset">        
+                    <div class="item">
+                        <h3 class="level-title">PHP &amp; Laravel</h3>
+                        <div class="level-bar">
+                            <div class="level-bar-inner" data-level="50%">
+                            </div>                                      
+                        </div><!--//level-bar-->                                 
+                    </div><!--//item-->
+
+                    <div class="item">
+                        <h3 class="level-title">SQL</h3>
+                        <div class="level-bar">
+                            <div class="level-bar-inner" data-level="60%">
+                            </div>                                      
+                        </div><!--//level-bar-->                                 
+                    </div><!--//item-->
+                    
+                    <div class="item">
+                        <h3 class="level-title">Javascript</h3>
+                        <div class="level-bar">
+                            <div class="level-bar-inner" data-level="60%">
+                            </div>                                      
+                        </div><!--//level-bar-->                                 
+                    </div><!--//item-->
+                    
+                    <div class="item">
+                        <h3 class="level-title">VueJS</h3>
+                        <div class="level-bar">
+                            <div class="level-bar-inner" data-level="60%">
+                            </div>                                      
+                        </div><!--//level-bar-->                                 
+                    </div><!--//item-->
+                    
+                    <div class="item">
+                        <h3 class="level-title">HTML5 &amp; CSS (+SASS)</h3>
+                        <div class="level-bar">
+                            <div class="level-bar-inner" data-level="80%">
+                            </div>                                      
+                        </div><!--//level-bar-->                                 
+                    </div><!--//item-->
+                    
+                    <div class="item">
+                        <h3 class="level-title">Java</h3>
+                        <div class="level-bar">
+                            <div class="level-bar-inner" data-level="40%">
+                            </div>                                      
+                        </div><!--//level-bar-->                                 
+                    </div><!--//item-->
+                    
+                </div>  
+            </section><!--//skills-section-->
+            
+        </div><!--//main-body-->
+    </div>
+ 
+    <footer class="footer">
+    </footer><!--//footer-->
+ 
+    <!-- Javascript -->          
+    <script type="text/javascript" src="assets/plugins/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>    
+    <!-- custom js -->
+    <script type="text/javascript" src="assets/js/main.js"></script>            
+</body>
+</html> 
+
