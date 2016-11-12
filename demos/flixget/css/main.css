@@ -365,6 +365,12 @@ th {
    ------------------------------------------------------ */
 /* Utility Mixins
    ========================================================================== */
+.clear {
+  float: none;
+  overflow: hidden;
+  clear: both;
+  height: 0; }
+
 /* Typography Styles
    ========================================================================== */
 html {
@@ -400,7 +406,9 @@ p {
   line-height: 135%; }
 
 li {
-  color: #a9a9a9;
+  color: #a9a9a9; }
+
+.title li {
   font-size: 1.7rem; }
 
 a {
@@ -547,7 +555,7 @@ a {
     padding: 0;
     pointer-events: none;
     position: absolute;
-    top: 100%;
+    bottom: 100%;
     left: 0;
     transform-origin: 50% 0;
     transform: scale(0.75) translateY(-21px);
@@ -599,6 +607,7 @@ body {
   margin: 0 auto; }
 
 #app {
+  position: relative;
   background-color: #fff;
   border-radius: 1rem;
   width: 95%;
@@ -629,6 +638,12 @@ ul {
   padding-left: 0;
   margin-top: 0; }
 
+h3 + p {
+  margin-bottom: 5px; }
+
+h3 + p + p {
+  margin-top: 0; }
+
 .title li {
   display: inline-block; }
   .title li:not(:last-child) {
@@ -639,19 +654,22 @@ ul {
   background-image: url("../img/poster.jpg");
   background-size: cover;
   background-position: top center;
-  background-repeat: none; }
+  background-repeat: no-repeat; }
 
 .meta {
   padding: 20px 0;
-  background-color: #fafafa;
-  -webkit-box-shadow: 0px -4px 31px -9px rgba(0, 0, 0, 0.75), 0px 7px 31px -9px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px -4px 31px -9px rgba(0, 0, 0, 0.75), 0px 7px 31px -9px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px -4px 31px -9px rgba(0, 0, 0, 0.75), 0px 7px 31px -9px rgba(0, 0, 0, 0.5); }
+  background-color: #fff;
+  -webkit-box-shadow: 0px -4px 31px -9px rgba(0, 0, 0, 0.75), 0px 7px 31px -9px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0px -4px 31px -9px rgba(0, 0, 0, 0.75), 0px 7px 31px -9px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px -4px 31px -9px rgba(0, 0, 0, 0.75), 0px 7px 31px -9px rgba(0, 0, 0, 0.3); }
   .meta h3:first-child {
     margin-top: 0;
     margin-bottom: 10px; }
 
 .meta__rating {
+  margin-top: 10px; }
+
+.rating--score {
   background-color: #0e6507;
   border-radius: 50%;
   color: #fff;
@@ -659,9 +677,101 @@ ul {
   padding: 5px;
   vertical-align: middle; }
 
+.action > p {
+  margin-top: 20px; }
+
+.meta__description {
+  margin-top: 20px; }
+  .meta__description h3 {
+    margin-bottom: 0; }
+
+h3 + p {
+  margin-top: 10px; }
+
 .action__buttons {
   margin-top: 20px; }
-  .action__buttons .button:nth-of-type(2) {
+
+.button:nth-of-type(2) {
+  margin-left: 20px; }
+
+@media only screen and (max-width: 345px) {
+  .button:nth-of-type(2) {
+    margin-left: 0;
+    display: block;
+    margin-top: 10px; } }
+@media only screen and (min-width: 600px) {
+  #app {
+    margin-top: 30px;
+    overflow: hidden; }
+
+  .poster {
+    height: 400px;
+    width: 48%;
+    float: left; }
+
+  .meta {
+    padding-bottom: 0;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none; }
+
+  .meta__description, .title {
+    width: 48%;
     float: right; }
+
+  .title h2, .title ul {
+    text-align: left; }
+  .title h2 {
+    padding-top: 0; }
+
+  .nice-select {
+    float: left;
+    min-width: 300px; } }
+@media only screen and (min-width: 740px) {
+  .action__buttons {
+    position: absolute;
+    bottom: 3%;
+    right: 3%; } }
+@media only screen and (min-width: 850px) {
+  #app {
+    max-width: 1000px;
+    padding-bottom: 0; }
+
+  .title {
+    width: 58%;
+    float: right; }
+
+  .poster {
+    height: 580px;
+    width: 40%;
+    margin-top: 0; }
+
+  .meta__description, .meta__rating, .meta__countries, .action {
+    width: 56%;
+    margin-right: 20px;
+    float: right; }
+
+  .meta__countries {
+    margin-top: 0; }
+
+  .clear {
+    display: none; }
+
+  .nice-select + .clear {
+    display: block; }
+
+  .container {
+    width: 100%; }
+
+  .action.container {
+    width: 56%;
+    margin-right: 20px; }
+
+  .nice-select {
+    position: absolute;
+    min-width: 200px; } }
+@media only screen and (min-width: 980px) {
+  .meta h3:first-child {
+    margin-bottom: 0; } }
 
 /*# sourceMappingURL=main.css.map */
